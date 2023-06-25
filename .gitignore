@@ -1,0 +1,3 @@
+.terraform*
+.tool-versions
+terraform.*
