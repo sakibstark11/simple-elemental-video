@@ -1,3 +1,9 @@
+# IDE
+.vscode
+.idea
+
+# Terraform
 .terraform*
+
+# Tools
 .tool-versions
-terraform.*
