@@ -23,7 +23,7 @@ locals {
   }
 }
 
-resource "aws_cloudformation_stack" "medialive_input" {
+resource "aws_cloudformation_stack" "medialive_channel" {
   name          = "${var.prefix}-medialive-channel"
   template_body = jsonencode(local.cloudformation_body_channel)
 }
