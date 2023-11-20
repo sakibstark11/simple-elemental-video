@@ -12,3 +12,8 @@ module "simple_elemental_video_medialive" {
   prefix           = var.prefix
   ingress_flow_arn = module.simple_elemental_video_mediaconnect.flow_arn
 }
+
+module "simple_elemental_video_mediapackage" {
+  source           = "./mediapackage"
+  prefix           = var.prefix
+}
