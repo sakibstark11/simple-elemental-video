@@ -3,11 +3,6 @@ variable "prefix" {
   description = "AWS Resources name prefix"
 }
 
-variable "aws_profile" {
-  type        = string
-  description = "AWS profile configured locally"
-}
-
 variable "billing_tag" {
   type        = string
   description = "AWS billing tag value"
@@ -38,4 +33,3 @@ variable "mediaconnect_settings" {
   })
   description = "AWS Elemental mediaconnect settings"
 }
-

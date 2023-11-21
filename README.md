@@ -11,3 +11,6 @@ MediaPackage: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS
 - Code Mediapackage
 - Add a r53 dns A record for Mediaconnect input
 - Deploy a cheap ec2 machine to run ffmpeg test stream
+
+
+eval "$(aws configure export-credentials --profile your-profile-name --format env)"
