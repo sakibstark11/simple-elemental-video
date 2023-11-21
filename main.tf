@@ -13,7 +13,8 @@ module "simple_elemental_video_mediaconnect" {
 }
 
 module "simple_elemental_video_medialive_input" {
-  source           = "./medialive"
-  prefix           = local.prefix
-  ingress_flow_arn = module.simple_elemental_video_mediaconnect.flow_arn
+  source                  = "./medialive"
+  prefix                  = local.prefix
+  ingress_flow_arn        = module.simple_elemental_video_mediaconnect.flow_arn
+  mediapackage_channel_id = "test"
 }

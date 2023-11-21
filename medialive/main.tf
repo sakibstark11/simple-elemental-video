@@ -13,6 +13,78 @@ locals {
         RoleArn = aws_iam_role.medialive_iam_role.arn
       }
     }
+
+    MedialiveChannel = {
+      DependsOn = ["MedialiveInput"]
+      Type      = "AWS::MediaLive::Channel"
+      Properties = {
+        Name    = "${var.prefix}-medialive-channel"
+        RoleArn = aws_iam_role.medialive_iam_role.arn
+        InputAttachments = [
+          {
+            InputId = {
+              Ref = "MedialiveInput"
+            }
+            InputSettings = {
+              SourceEndBehavior = "CONTINUE"
+            }
+          }
+        ]
+        ChannelClass = "SINGLE_PIPELINE"
+        # Destinations = [
+        #   {
+        #     Id = "${var.prefix}-destination-${var.mediapackage_channel_id}"
+        #     MediaPackageSettings = [
+        #       {
+        #         ChannelId = var.mediapackage_channel_id
+        #       }
+        #     ]
+        #   }
+        # ]
+        EncoderSettings = {
+          AudioDescriptions = [
+            {
+              AudioTypeControl = "FOLLOW_INPUT"
+              CodecSettings = {
+                AacSettings = {
+                  Bitrate    = 96000
+                  CodingMode = "CODING_MODE_2_0"
+                  SampleRate = 48000
+                }
+              }
+              LanguageCode = "ENG"
+              Name         = "${var.prefix}-medialive-channel-audio-descriptor"
+              RemixSettings = {
+                ChannelsIn  = 2
+                ChannelsOut = 2
+              }
+            }
+          ]
+          VideoDescriptions = [
+            {
+              Width           = 1920
+              Height          = 1080
+              ScalingBehavior = "DEFAULT",
+              Sharpness       = 50
+              CodecSettings = {
+                H264Settings = {
+                  Bitrate           = 5000000
+                  RateControlMode   = "CBR"
+                  SceneChangeDetect = "ENABLED"
+                  NumRefFrames      = 3
+                  Level             = "H264_LEVEL_AUTO"
+                  MaxBitrate        = 5000000
+                  BufSize           = 10000000
+                  GopSizeUnits      = "FRAMES"
+                  ParControl        = "INITIALIZE_FROM_SOURCE"
+                }
+              },
+              Name = "${var.prefix}-medialive-channel-video-descriptor"
+            }
+          ]
+        }
+      }
+    }
   }
 
   cloudformation_body_input = {
@@ -94,8 +166,8 @@ locals {
       Destinations    = []
       EncoderSettings = ""
       InputAttachments = [{
-        InputAttachmentName : "${var.prefix}-input-attachment"
-        InputId : ""
+        InputAttachmentName = "${var.prefix}-input-attachment"
+        InputId             = ""
       }]
       InputSpecification = ""
       LogLevel           = "INFO"

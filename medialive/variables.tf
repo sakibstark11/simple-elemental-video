@@ -7,3 +7,8 @@ variable "prefix" {
   type        = string
   description = "will be applied where possible"
 }
+
+variable "mediapackage_channel_id" {
+  type        = string
+  description = "the mediapackage channel id to use as destination"
+}
