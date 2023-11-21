@@ -7,3 +7,8 @@ variable "ingress_flow_arn" {
   type        = string
   description = "mediaconnect ingress flow arn to use as input"
 }
+
+variable "mediapackage_channel_id" {
+  type        = string
+  description = "the mediapackage channel id to use as destination"
+}
