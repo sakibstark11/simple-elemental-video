@@ -3,10 +3,10 @@ locals {
     Mediaconnect = {
       Type = "AWS::MediaConnect::Flow"
       Properties = {
-        Name = "${var.prefix}-source"
+        Name = "${var.prefix}-flow"
         Source = {
-          IngestPort    = var.ingress_port
-          Name          = "${var.prefix}-srt-${var.ingress_port}",
+          IngestPort    = var.ingest_port
+          Name          = "${var.prefix}-srt-${var.ingest_port}",
           Protocol      = var.mediaconnect_protocol,
           WhitelistCidr = var.whitelist_cidr_address
         }

@@ -16,7 +16,8 @@ data "aws_iam_policy_document" "medialive_iam_mediaconnect_policy" {
       "mediaconnect:ManagedAddOutput",
       "mediaconnect:ManagedRemoveOutput"
     ]
-    resources = [var.ingress_flow_arn]
+    effect    = "Allow"
+    resources = ["*"]
   }
 }
 
@@ -29,6 +30,7 @@ data "aws_iam_policy_document" "medialive_iam_logs_policy" {
       "logs:DescribeLogStreams",
       "logs:DescribeLogGroups"
     ]
+    effect    = "Allow"
     resources = ["arn:aws:logs:*:*:*"]
   }
 }
@@ -36,6 +38,7 @@ data "aws_iam_policy_document" "medialive_iam_logs_policy" {
 data "aws_iam_policy_document" "medialive_iam_mediapackage_policy" {
   statement {
     actions   = ["mediapackage:DescribeChannel"]
-    resources = ["*"]  //TODO: add proper resources
+    effect    = "Allow"
+    resources = ["*"]
   }
 }

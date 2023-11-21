@@ -3,7 +3,7 @@ output "ingress_ip" {
 }
 
 output "ingest_port" {
-  value = local.cloudformation_resources.Mediaconnect.Properties.Source.IngestPort
+  value = var.ingest_port
 }
 
 output "flow_arn" {

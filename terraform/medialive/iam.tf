@@ -1,10 +1,9 @@
 resource "aws_iam_role" "medialive_iam_role" {
   name               = "${var.prefix}-medialive-role"
-  path               = "/"
   assume_role_policy = data.aws_iam_policy_document.medialive_iam_assume_role.json
 
   inline_policy {
-    name   = "mediaconnect-input"
+    name   = "mediaconnect"
     policy = data.aws_iam_policy_document.medialive_iam_mediaconnect_policy.json
   }
 

@@ -4,7 +4,7 @@ variable "prefix" {
 }
 
 variable "aws_profile" {
-  type = string
+  type        = string
   description = "AWS profile configured locally"
 }
 
@@ -32,9 +32,9 @@ variable "budget_settings" {
 
 variable "mediaconnect_settings" {
   type = object({
-    mediaconnect_protocol = string
-    whitelist_cidr_address = list(string)
-    ingress_port = number
+    mediaconnect_protocol  = string
+    whitelist_cidr_address = string
+    ingest_port            = number
   })
   description = "AWS Elemental mediaconnect settings"
 }

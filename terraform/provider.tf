@@ -3,7 +3,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      local.project_name = var.billing_tag
+      "${var.billing_tag}" = local.project_name
     }
   }
 }

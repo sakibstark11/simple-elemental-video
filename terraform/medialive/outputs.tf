@@ -1,3 +1,3 @@
-output "input_id" {
-  value = aws_cloudformation_stack.medialive_input.outputs.InputId
+output "channel_id" {
+  value = aws_medialive_channel.channel.id
 }
