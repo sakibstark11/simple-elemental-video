@@ -31,16 +31,16 @@ locals {
           }
         ]
         ChannelClass = "SINGLE_PIPELINE"
-        # Destinations = [
-        #   {
-        #     Id = "${var.prefix}-destination-${var.mediapackage_channel_id}"
-        #     MediaPackageSettings = [
-        #       {
-        #         ChannelId = var.mediapackage_channel_id
-        #       }
-        #     ]
-        #   }
-        # ]
+        Destinations = [
+          {
+            Id = "${var.prefix}-destination-${var.mediapackage_channel_id}"
+            MediaPackageSettings = [
+              {
+                ChannelId = var.mediapackage_channel_id
+              }
+            ]
+          }
+        ]
         EncoderSettings = {
           AudioDescriptions = [
             {
