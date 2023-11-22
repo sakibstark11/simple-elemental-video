@@ -1,14 +1,13 @@
 locals {
-  ingress_port = 5000
   cloudformation_resources = {
     Mediaconnect = {
       Type = "AWS::MediaConnect::Flow"
       Properties = {
-        Name = "${var.prefix}-source"
+        Name = "${var.prefix}-flow"
         Source = {
-          IngestPort    = local.ingress_port
-          Name          = "${var.prefix}-srt-${local.ingress_port}",
-          Protocol      = "srt-listener",
+          IngestPort    = var.ingest_port
+          Name          = "${var.prefix}-${var.mediaconnect_protocol}-${var.ingest_port}",
+          Protocol      = var.mediaconnect_protocol,
           WhitelistCidr = var.whitelist_cidr_address
         }
       }

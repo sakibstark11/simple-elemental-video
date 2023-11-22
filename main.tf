@@ -1,20 +1,23 @@
-locals {
-  prefix = "sakib"
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+  }
 }
 
 data "http" "current_ip" {
   url = "https://api.ipify.org"
 }
 
-module "simple_elemental_video_mediaconnect" {
-  source                 = "./mediaconnect"
-  prefix                 = local.prefix
-  whitelist_cidr_address = "${data.http.current_ip.response_body}/32"
-}
+module "aws_elemental_video_pipeline" {
+  source      = "./terraform"
+  prefix      = "simple-elemental"
 
-module "simple_elemental_video_medialive_input" {
-  source                  = "./medialive"
-  prefix                  = local.prefix
-  ingress_flow_arn        = module.simple_elemental_video_mediaconnect.flow_arn
-  mediapackage_channel_id = "test"
+  mediaconnect_settings = {
+    mediaconnect_protocol  = "srt-listener"
+    whitelist_cidr_address = "${data.http.current_ip.response_body}/32"
+    ingest_port            = 5000
+  }
 }
