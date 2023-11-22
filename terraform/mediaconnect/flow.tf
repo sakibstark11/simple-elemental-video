@@ -6,7 +6,7 @@ locals {
         Name = "${var.prefix}-flow"
         Source = {
           IngestPort    = var.ingest_port
-          Name          = "${var.prefix}-srt-${var.ingest_port}",
+          Name          = "${var.prefix}-${var.mediaconnect_protocol}-${var.ingest_port}",
           Protocol      = var.mediaconnect_protocol,
           WhitelistCidr = var.whitelist_cidr_address
         }
