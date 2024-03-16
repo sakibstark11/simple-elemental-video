@@ -6,5 +6,5 @@
 .terraform*
 terraform.tfstate*
 
-# Tools
-.tool-versions
+# Zip
+*.zip

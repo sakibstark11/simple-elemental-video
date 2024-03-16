@@ -12,8 +12,8 @@ data "http" "current_ip" {
 }
 
 module "aws_elemental_video_pipeline" {
-  source      = "./terraform"
-  prefix      = "simple-elemental"
+  source = "./terraform"
+  prefix = "sakib-alam"
 
   mediaconnect_settings = {
     mediaconnect_protocol  = "srt-listener"
