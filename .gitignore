@@ -8,3 +8,9 @@ terraform.tfstate*
 
 # Zip
 *.zip
+
+# Python
+**/layer/*
+
+# Macos
+.DS_Store

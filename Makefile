@@ -1,30 +1,32 @@
 AWS_REGION?=eu-west-1
-TERRAFORM_VERSION=1.7.3
+TERRAFORM_VERSION=1.8.0
 AWS_CLI_IMAGE=amazon/aws-cli
 TERRAFORM_IMAGE=hashicorp/terraform:${TERRAFORM_VERSION}
 DOCKER_ENV=-e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION -e AWS_REGION
-DOCKER_RUN_MOUNT_OPTIONS=-v ${CURDIR}/:/app -w /app
+DOCKER_RUN_MOUNT_OPTIONS=-v ${CURDIR}/:/app -w /app -v /var/run/docker.sock:/var/run/docker.sock
 FFMPEG_IMAGE=sakibstark11/ffmpeg
+TERRAFORM_DOCKER_IMAGE?=local-terraform-docker
 
 define run_docker
-	docker run -it --rm ${DOCKER_ENV} ${DOCKER_RUN_MOUNT_OPTIONS}
+	docker build . -t ${TERRAFORM_DOCKER_IMAGE}
+	docker run -it --rm ${DOCKER_ENV} ${DOCKER_RUN_MOUNT_OPTIONS} ${TERRAFORM_DOCKER_IMAGE}
 endef
 
 define get_output
-	$(run_docker) ${TERRAFORM_IMAGE} output $(1)
+	$(run_docker) output $(1)
 endef
 
 tf-init:
-	$(run_docker) ${TERRAFORM_IMAGE} init
+	$(run_docker) init
 
 tf-plan:
-	$(run_docker) ${TERRAFORM_IMAGE} plan
+	$(run_docker) plan
 
 tf-apply:
-	$(run_docker) ${TERRAFORM_IMAGE} apply --auto-approve
+	$(run_docker) apply --auto-approve
 
 tf-destroy:
-	$(run_docker) ${TERRAFORM_IMAGE} destroy --auto-approve
+	$(run_docker) destroy --auto-approve
 
 MEDIACONNECT_FLOW_ARN=$(shell $(call get_output,mediaconnect_flow_arn))
 MEDIALIVE_CHANNEL_ID=$(shell $(call get_output,medialive_channel_id))
