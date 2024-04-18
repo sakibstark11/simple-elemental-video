@@ -1,6 +1,7 @@
 # Simple Elemental Video
 
-Deploy a simple aws video pipeline
+Deploy an aws video pipeline that can edit segments in real time.
+![architecture](./architecture/full.png)
 
 # Cloudformation Docs
 
