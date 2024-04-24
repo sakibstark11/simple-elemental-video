@@ -31,6 +31,14 @@ data "aws_iam_policy_document" "s3_policy" {
   }
 }
 
+data "aws_iam_policy_document" "mediapackage_put_policy" {
+  statement {
+    actions   = ["mediapackage:*"]
+    effect    = "Allow"
+    resources = ["*"]
+  }
+}
+
 resource "aws_iam_role" "lambda_iam_role" {
   name               = "${var.prefix}-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
@@ -41,6 +49,10 @@ resource "aws_iam_role" "lambda_iam_role" {
   inline_policy {
     name   = "logs"
     policy = data.aws_iam_policy_document.lambda_logs_policy.json
+  }
+  inline_policy {
+    name   = "mediapackage"
+    policy = data.aws_iam_policy_document.mediapackage_put_policy.json
   }
 }
 
@@ -98,9 +110,10 @@ resource "aws_lambda_function" "segment_modifier" {
   handler          = "handler.handler"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   layers           = [aws_lambda_layer_version.python_requirements_layer.arn]
+  timeout          = 30
   environment {
     variables = {
-      mediapackage_hls_ingest_endpoint = jsonencode(var.mediapackage_hls_ingest_endpoints)
+      mediapackage_hls_ingest_endpoints = jsonencode(var.mediapackage_hls_ingest_endpoints)
     }
   }
 }
