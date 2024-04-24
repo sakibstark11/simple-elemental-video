@@ -12,7 +12,7 @@ define run_docker
 endef
 
 define get_output
-	$(run_docker) output $(1)
+	$(run_docker) ${TERRAFORM_PYTHON_IMAGE} output $(1)
 endef
 
 tf-init:
