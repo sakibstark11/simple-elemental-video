@@ -1,5 +1,6 @@
 resource "aws_s3_bucket" "segment_storage" {
-  bucket = "${var.prefix}-segment-storage"
+  bucket        = "${var.prefix}-segment-storage"
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_notification" "segment_storage" {
