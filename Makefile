@@ -8,7 +8,7 @@ FFMPEG_IMAGE=sakibstark11/ffmpeg
 TERRAFORM_PYTHON_IMAGE?=local-terraform-python
 
 define run_docker
-	docker run -it --rm ${DOCKER_ENV} ${DOCKER_RUN_MOUNT_OPTIONS}
+	docker run --platform=linux/amd64 -it --rm ${DOCKER_ENV} ${DOCKER_RUN_MOUNT_OPTIONS}
 endef
 
 define get_output
