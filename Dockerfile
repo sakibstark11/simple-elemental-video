@@ -1,5 +1,5 @@
 # Use Terraform 1.8.0 as base image
-FROM hashicorp/terraform:1.8.0
+FROM --platform=linux/amd64 hashicorp/terraform:1.8.0
 
 # Install necessary dependencies
 RUN apk add --no-cache \
