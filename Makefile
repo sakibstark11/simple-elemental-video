@@ -1,4 +1,5 @@
 AWS_REGION?=eu-west-1
+AWS_DEFAULT_REGION?=eu-west-1
 TERRAFORM_VERSION=1.6.4
 AWS_CLI_IMAGE=amazon/aws-cli
 TERRAFORM_IMAGE=hashicorp/terraform:${TERRAFORM_VERSION}
