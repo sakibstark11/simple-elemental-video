@@ -34,11 +34,3 @@ data "aws_iam_policy_document" "medialive_iam_logs_policy" {
     resources = ["arn:aws:logs:*:*:*"]
   }
 }
-
-data "aws_iam_policy_document" "s3_policy" {
-  statement {
-    actions   = ["s3:PutObject"]
-    effect    = "Allow"
-    resources = ["arn:aws:s3:::${var.segment_storage_bucket}/*"]
-  }
-}

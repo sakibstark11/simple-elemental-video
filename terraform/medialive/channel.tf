@@ -1,5 +1,5 @@
 locals {
-  destination_name             = "${var.prefix}-s3"
+  destination_name             = "${var.prefix}-lambda"
   audio_description_name       = "${var.prefix}-1"
   video_description_name_1080p = "${var.prefix}-1080p"
   video_description_name_720p  = "${var.prefix}-720p"
@@ -29,8 +29,9 @@ resource "aws_medialive_channel" "channel" {
     id = local.destination_name
 
     settings {
-      url = "s3://${var.segment_storage_bucket}/index"
+      url = "${var.lambda_url}index"
     }
+
   }
 
   encoder_settings {
@@ -92,6 +93,7 @@ resource "aws_medialive_channel" "channel" {
 
     output_groups {
       name = local.destination_name
+
       outputs {
         output_name             = "${var.prefix}-1080p"
         video_description_name  = local.video_description_name_1080p
@@ -113,8 +115,11 @@ resource "aws_medialive_channel" "channel" {
         audio_description_names = [local.audio_description_name]
         output_settings {
           hls_output_settings {
+
             hls_settings {
+
               standard_hls_settings {
+
                 m3u8_settings {}
               }
             }
@@ -127,10 +132,16 @@ resource "aws_medialive_channel" "channel" {
         video_description_name  = local.video_description_name_480p
         audio_description_names = [local.audio_description_name]
         output_settings {
+
           hls_output_settings {
+
             hls_settings {
+
               standard_hls_settings {
-                m3u8_settings {}
+
+                m3u8_settings {
+
+                }
               }
             }
           }
@@ -139,6 +150,14 @@ resource "aws_medialive_channel" "channel" {
 
       output_group_settings {
         hls_group_settings {
+          hls_cdn_settings {
+            hls_basic_put_settings {
+              connection_retry_interval = 1
+              num_retries               = 5
+              filecache_duration        = 100
+              restart_delay             = 10
+            }
+          }
           destination {
             destination_ref_id = local.destination_name
           }

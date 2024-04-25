@@ -7,10 +7,10 @@ module "mediaconnect" {
 }
 
 module "medialive" {
-  source                 = "./medialive"
-  prefix                 = var.prefix
-  mediaconnect_flow_arn  = module.mediaconnect.flow_arn
-  segment_storage_bucket = aws_s3_bucket.segment_storage.id
+  source                = "./medialive"
+  prefix                = var.prefix
+  mediaconnect_flow_arn = module.mediaconnect.flow_arn
+  lambda_url            = module.segment_modifier_lambda.lambda_url
 }
 
 module "mediapackage" {
@@ -21,6 +21,6 @@ module "mediapackage" {
 module "segment_modifier_lambda" {
   source                            = "./segment_modifier_lambda"
   prefix                            = var.prefix
-  source_s3_bucket                  = aws_s3_bucket.segment_storage.id
+  source_s3_bucket                  = "s3://test"
   mediapackage_hls_ingest_endpoints = module.mediapackage.hls_ingest_endpoints
 }

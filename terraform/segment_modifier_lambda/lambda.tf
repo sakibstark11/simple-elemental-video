@@ -118,10 +118,7 @@ resource "aws_lambda_function" "segment_modifier" {
   }
 }
 
-resource "aws_lambda_permission" "s3_invoke" {
-  statement_id  = "AllowS3Invoke"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.segment_modifier.arn
-  principal     = "s3.amazonaws.com"
-  source_arn    = "arn:aws:s3:::${var.source_s3_bucket}"
+resource "aws_lambda_function_url" "segment_modifier" {
+  function_name      = aws_lambda_function.segment_modifier.function_name
+  authorization_type = "NONE"
 }

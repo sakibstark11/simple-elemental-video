@@ -8,7 +8,7 @@ variable "mediaconnect_flow_arn" {
   description = "mediaconnect ingress flow arn to use as input"
 }
 
-variable "segment_storage_bucket" {
+variable "lambda_url" {
   type        = string
-  description = "bucket to dump segments in"
+  description = "url to post to"
 }
