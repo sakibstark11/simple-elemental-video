@@ -72,11 +72,10 @@ data "archive_file" "lambda_zip" {
 resource "null_resource" "python_requirements" {
   triggers = {
     requirements_md5 = filemd5("${path.module}/lambda/requirements.txt")
-    always           = timestamp()
   }
   provisioner "local-exec" {
     when    = create
-    command = "pip install -r ${path.module}/lambda/requirements.txt -t ${path.module}/layer/python"
+    command = "pip install -r ${path.module}/lambda/requirements.txt -t ${path.module}/layer/python --force-reinstall"
   }
 }
 

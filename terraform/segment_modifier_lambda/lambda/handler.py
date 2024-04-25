@@ -10,7 +10,7 @@ def postStreamToMediaPackage(envVariables, fileName, content, contentType):
     mediaPackageUrl = envVariables["url"]
     username = envVariables["username"]
     password = envVariables["password"]
-    ingestUrl = f"{mediaPackageUrl.rstrip('channel')}/{fileName}"
+    ingestUrl = f"{mediaPackageUrl.rstrip('/channel')}/{fileName}"
 
     response = requests.put(
         ingestUrl, data=content, headers={
