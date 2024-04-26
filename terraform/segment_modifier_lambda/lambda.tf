@@ -29,13 +29,10 @@ data "aws_iam_policy_document" "s3_policy" {
     effect    = "Allow"
     resources = ["arn:aws:s3:::${var.source_s3_bucket}/*"]
   }
-}
-
-data "aws_iam_policy_document" "mediapackage_put_policy" {
   statement {
-    actions   = ["mediapackage:*"]
+    actions   = ["s3:PutObject"]
     effect    = "Allow"
-    resources = ["*"]
+    resources = ["arn:aws:s3:::${var.destination_s3_bucket}/*"]
   }
 }
 
@@ -49,10 +46,6 @@ resource "aws_iam_role" "lambda_iam_role" {
   inline_policy {
     name   = "logs"
     policy = data.aws_iam_policy_document.lambda_logs_policy.json
-  }
-  inline_policy {
-    name   = "mediapackage"
-    policy = data.aws_iam_policy_document.mediapackage_put_policy.json
   }
 }
 
@@ -112,7 +105,7 @@ resource "aws_lambda_function" "segment_modifier" {
   timeout          = 30
   environment {
     variables = {
-      mediapackage_hls_ingest_endpoints = jsonencode(var.mediapackage_hls_ingest_endpoints)
+      destination_s3_bucket = var.destination_s3_bucket
     }
   }
 }
