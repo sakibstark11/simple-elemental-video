@@ -31,14 +31,6 @@ data "aws_iam_policy_document" "s3_policy" {
   }
 }
 
-data "aws_iam_policy_document" "mediapackage_put_policy" {
-  statement {
-    actions   = ["mediapackage:*"]
-    effect    = "Allow"
-    resources = ["*"]
-  }
-}
-
 resource "aws_iam_role" "lambda_iam_role" {
   name               = "${var.prefix}-lambda-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
@@ -49,10 +41,6 @@ resource "aws_iam_role" "lambda_iam_role" {
   inline_policy {
     name   = "logs"
     policy = data.aws_iam_policy_document.lambda_logs_policy.json
-  }
-  inline_policy {
-    name   = "mediapackage"
-    policy = data.aws_iam_policy_document.mediapackage_put_policy.json
   }
 }
 
