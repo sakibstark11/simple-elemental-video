@@ -21,7 +21,7 @@ async def async_handler(event, context, fileObject):
 def lambda_handler(event, context):
     s3 = boto3.client("s3")
     fileObject = s3.get_object(
-        Bucket="tasnuva-zaman-segment-storage", Key='41.png')
+        Bucket="bucket-name", Key='object-key')
     result = asyncio.run(async_handler(event, context, fileObject))
 
     return {
