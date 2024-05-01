@@ -1,72 +1,66 @@
 import json
 import cv2
-import face_recognition
 import asyncio
 import os
 
 import boto3
 from postStreamToMediaPackage import postStreamToMediaPackage, postStreamToMultipleMediaPackageEndpoints
 
-
-def detect_bounding_box(frame):
-    print('detecting bounding box')
-    rgb_frame = frame[:, :, ::-1]
-    face_locations = face_recognition.face_locations(rgb_frame)
-    for top, right, bottom, left in face_locations:
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 255), 2)
-        face_image = frame[top:bottom, left:right]
-        blurred_face = cv2.blur(face_image, (99, 99))
-        frame[top:bottom, left:right] = blurred_face
-    return face_locations
+face_classifier = cv2.CascadeClassifier(
+    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+)
 
 
-def process_video_stream(video_stream):
-    print('processing video stream', video_stream)
+def detect_label_and_blur_faces(frame):
+    gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = face_classifier.detectMultiScale(gray_image, 1.1, 6, minSize=(40, 40))
+    for (x, y, w, h) in faces:
+        roi = frame[y:y + h, x:x + w]
+        blurred_roi = cv2.blur(roi, (30, 30))
+        frame[y:y + h, x:x + w] = blurred_roi
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 4)
+        cv2.putText(frame, 'Face', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+    return faces
+
+
+async def process_video_stream(video_stream):
+    print('Processing video stream...')
+
     cap = cv2.VideoCapture(video_stream)
-    frame_width = int(cap.get(3))
-    frame_height = int(cap.get(4))
-    # out = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 10, (frame_width, frame_height))
+    # fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+    # out = cv2.VideoWriter('output.mp4', fourcc, 20.0, (640, 480))
 
     if not cap.isOpened():
         print("Error: Unable to open video stream")
-        return
-    frames = []
+        return []
+
+    bytes_list = []
+
     while True:
         result, frame = cap.read()
 
-        if result is False:
+        if not result:
             break
-
-        boxes = detect_bounding_box(frame)
+        faces = detect_label_and_blur_faces(frame)
         # out.write(frame)
-        cv2.imshow('Video', frame)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        if result:
+            bytes_list.append(frame.tobytes())
 
     cap.release()
-    cv2.destroyAllWindows()
-
-    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-    bytes_list = []
-    for frame in frames:
-        result, encimg = cv2.imencode('.jpg', frame, encode_param)
-        if result:
-            bytes_list.append(encimg.tobytes())
-
-    os.remove(video_stream)
-
+    # out.release()
     return bytes_list
 
 
-async def async_handler(fileContent):
+async def async_handler(fileObject):
+    print('async handler')
+    fileContent = fileObject["Body"].read()
     video_path = '/tmp/video.ts'
     with open(video_path, 'wb') as f:
         f.write(fileContent)
-    process_video_stream(video_path)
-    await asyncio.sleep(1)
+    byte_list = await process_video_stream(video_path)
 
-    return 'success'
+    os.remove(video_path)
+    return byte_list
 
 
 def getS3FileDetailsFromEvent(event):
@@ -75,6 +69,7 @@ def getS3FileDetailsFromEvent(event):
         "key": event["Records"][0]["s3"]["object"]["key"],
         "fileName": event["Records"][0]["s3"]["object"]["key"].split("/")[-1],
     }
+
 
 def handler(event, context):
     s3 = boto3.client("s3")
@@ -103,9 +98,11 @@ def handler(event, context):
         json.loads(envVariablesList),
         fileName,
         content,
-        { "contentLength": fileObject['ContentLength'], "contentType": "application/octet-stream" },
+        {"contentLength": fileObject['ContentLength'], "contentType": "application/octet-stream"},
     )
     #
     print(ingestResult)
     return ingestResult
+
+
 handler({}, {})
