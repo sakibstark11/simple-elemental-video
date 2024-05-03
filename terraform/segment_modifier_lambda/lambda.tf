@@ -100,7 +100,7 @@ resource "aws_lambda_function" "segment_modifier" {
   timeout          = 30
   environment {
     variables = {
-      mediapackage_hls_ingest_endpoints = jsonencode(var.mediapackage_hls_ingest_endpoints)
+      destination_s3_bucket = var.destination_s3_bucket
     }
   }
 }
