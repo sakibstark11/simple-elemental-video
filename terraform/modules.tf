@@ -13,9 +13,14 @@ module "medialive" {
   segment_storage_bucket = aws_s3_bucket.segment_storage.id
 }
 
+module "mediapackage" {
+  source = "./mediapackage"
+  prefix = var.prefix
+}
+
 module "segment_modifier_lambda" {
-  source                = "./segment_modifier_lambda"
-  prefix                = var.prefix
-  source_s3_bucket      = aws_s3_bucket.segment_storage.id
-  destination_s3_bucket = aws_s3_bucket.segment_server.id
+  source                            = "./segment_modifier_lambda"
+  prefix                            = var.prefix
+  source_s3_bucket                  = aws_s3_bucket.segment_storage.id
+  mediapackage_hls_ingest_endpoints = module.mediapackage.hls_ingest_endpoints
 }

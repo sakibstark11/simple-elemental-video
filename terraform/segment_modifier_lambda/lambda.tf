@@ -63,7 +63,7 @@ resource "null_resource" "python_requirements" {
   }
   provisioner "local-exec" {
     when    = create
-    command = "pip install -r ${path.module}/lambda/requirements.txt -t ${path.module}/layer/python --force-reinstall"
+    command = "pip install -r ${path.module}/lambda/requirements.txt -t ${path.module}/layer/python --force-reinstall -vvv"
   }
 }
 
@@ -98,9 +98,10 @@ resource "aws_lambda_function" "segment_modifier" {
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   layers           = [aws_lambda_layer_version.python_requirements_layer.arn]
   timeout          = 30
+  memory_size      = 1024
   environment {
     variables = {
-      destination_s3_bucket = var.destination_s3_bucket
+      mediapackage_hls_ingest_endpoints = jsonencode(var.mediapackage_hls_ingest_endpoints)
     }
   }
 }

@@ -1,7 +1,8 @@
 import os
 
 import boto3
-from postStreamToMediaPackage import postStreamToMediaPackage, postStreamToMultipleMediaPackageEndpoints
+from postStreamToMediaPackage import postStreamToMultipleMediaPackageEndpoints
+
 
 def getS3FileDetailsFromEvent(event):
     return {
@@ -9,6 +10,7 @@ def getS3FileDetailsFromEvent(event):
         "key": event["Records"][0]["s3"]["object"]["key"],
         "fileName": event["Records"][0]["s3"]["object"]["key"].split("/")[-1],
     }
+
 
 def handler(event, context):
     s3 = boto3.client("s3")
@@ -20,19 +22,13 @@ def handler(event, context):
 
     envVariablesList = os.getenv("mediapackage_hls_ingest_endpoints")
 
-    # ingestResult = [
-    #     postStreamToMediaPackage(
-    #         envVars, s3FileDetails["fileName"], 
-    #         fileContent, 
-    #         { "contentLength": fileObject['ContentLength'], "contentType": "application/octet-stream" }
-    #     ) for envVars in json.loads(envVariablesList)
-    # ]
     ingestResult = postStreamToMultipleMediaPackageEndpoints(
         json.loads(envVariablesList),
-        s3FileDetails["fileName"], 
-        fileContent, 
-        { "contentLength": fileObject['ContentLength'], "contentType": "application/octet-stream" }, 
+        s3FileDetails["fileName"],
+        fileContent,
+        {"contentLength": fileObject['ContentLength'],
+            "contentType": "application/octet-stream"},
     )
-    
+
     print(ingestResult)
     return ingestResult
