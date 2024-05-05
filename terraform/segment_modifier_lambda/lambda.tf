@@ -82,11 +82,23 @@ data "archive_file" "layer_zip" {
   depends_on = [null_resource.python_requirements]
 }
 
+resource "aws_s3_bucket" "layer_bucket" {
+  bucket        = "${var.prefix}-layer"
+  force_destroy = true
+}
+
+resource "aws_s3_object" "layer_upload" {
+  bucket = aws_s3_bucket.layer_bucket.id
+  key    = "layer.zip"
+  source = data.archive_file.layer_zip.output_path
+}
+
 resource "aws_lambda_layer_version" "python_requirements_layer" {
-  filename            = data.archive_file.layer_zip.output_path
   layer_name          = "${var.prefix}-python-layer"
   source_code_hash    = data.archive_file.layer_zip.output_base64sha256
   compatible_runtimes = ["python3.11"]
+  s3_bucket           = aws_s3_bucket.layer_bucket.id
+  s3_key              = aws_s3_object.layer_upload.key
 }
 
 resource "aws_lambda_function" "segment_modifier" {

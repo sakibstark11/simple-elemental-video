@@ -9,7 +9,7 @@ TERRAFORM_PYTHON_IMAGE?=local-terraform-python
 DOCKER_DEFAULT_PLATFORM=linux/amd64
 
 define run_docker
-	docker run --platform=linux/amd64 -it --rm ${DOCKER_ENV} ${DOCKER_RUN_MOUNT_OPTIONS}
+	docker run -it --rm ${DOCKER_ENV} ${DOCKER_RUN_MOUNT_OPTIONS}
 endef
 
 define get_output
