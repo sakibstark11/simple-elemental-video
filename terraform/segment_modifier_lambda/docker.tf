@@ -5,8 +5,13 @@ resource "aws_ecr_repository" "ecr_repo" {
 resource "docker_image" "ecr_image" {
   name = "${var.prefix}-ecr-image"
 
+  triggers = {
+    dockerfile_md5 = filemd5("${path.module}/Dockerfile")
+  }
   build {
-    context = "${path.module}/Dockerfile"
+    context      = abspath("${path.module}/")
+    force_remove = true
+    dockerfile   = "Dockerfile"
   }
 }
 
