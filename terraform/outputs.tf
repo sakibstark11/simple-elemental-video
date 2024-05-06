@@ -13,3 +13,7 @@ output "mediaconnect_flow_arn" {
 output "medialive_channel_id" {
   value = module.medialive.channel_id
 }
+
+output "mediapackage_hls_endpoint" {
+  value = module.mediapackage.hls_origin_endpoint
+}
