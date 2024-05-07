@@ -1,3 +1,4 @@
+import json
 import os
 
 import boto3
@@ -12,8 +13,10 @@ def getS3FileDetailsFromEvent(event):
     }
 
 
+s3 = boto3.client("s3")
+
+
 def handler(event, context):
-    s3 = boto3.client("s3")
 
     s3FileDetails = getS3FileDetailsFromEvent(event)
     fileObject = s3.get_object(

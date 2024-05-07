@@ -8,10 +8,11 @@ locals {
 
 resource "docker_image" "ecr_image" {
   name     = "${var.prefix}-ecr-image"
-  platform = "linux/x86_64"
+  platform = "linux/amd64"
 
   triggers = {
     dockerfile_md5 = local.dockerfile_md5
+    all_files      = sha1(join("", [for f in fileset("lambda/", "*") : filesha1("lambda/${f}")]))
   }
   build {
     context      = abspath("${path.module}/")

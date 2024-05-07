@@ -44,68 +44,9 @@ resource "aws_iam_role" "lambda_iam_role" {
   }
 }
 
-# data "archive_file" "lambda_zip" {
-#   type        = "zip"
-#   source_dir  = "${path.module}/lambda"
-#   output_path = "${path.module}/lambda.zip"
-#   excludes = concat(
-#     [
-#       "${path.module}/lambda.zip",
-#       "${path.module}/layer.zip"
-#     ],
-#     tolist(fileset("${path.module}/layer", "**"))
-#   )
-# }
-
-# resource "null_resource" "python_requirements" {
-#   triggers = {
-#     requirements_md5 = filemd5("${path.module}/lambda/requirements.txt")
-#   }
-#   provisioner "local-exec" {
-#     when    = create
-#     command = "pip install -r ${path.module}/lambda/requirements.txt -t ${path.module}/layer/python --force-reinstall -vvv"
-#   }
-# }
-
-# data "archive_file" "layer_zip" {
-#   type        = "zip"
-#   source_dir  = "${path.module}/layer/"
-#   output_path = "${path.module}/layer.zip"
-#   excludes = concat(
-#     tolist(fileset("${path.module}", "*.tf")),
-#     tolist(fileset("${path.module}/lambda", "**")),
-#     [
-#       "${path.module}/layer.zip",
-#       "${path.module}/lambda.zip"
-#     ]
-#   )
-#   depends_on = [null_resource.python_requirements]
-# }
-
-# resource "aws_s3_bucket" "layer_bucket" {
-#   bucket        = "${var.prefix}-layer"
-#   force_destroy = true
-# }
-
-# resource "aws_s3_object" "layer_upload" {
-#   bucket = aws_s3_bucket.layer_bucket.id
-#   key    = "layer.zip"
-#   source = data.archive_file.layer_zip.output_path
-# }
-
-# resource "aws_lambda_layer_version" "python_requirements_layer" {
-#   layer_name          = "${var.prefix}-python-layer"
-#   source_code_hash    = data.archive_file.layer_zip.output_base64sha256
-#   compatible_runtimes = ["python3.11"]
-#   s3_bucket           = aws_s3_bucket.layer_bucket.id
-#   s3_key              = aws_s3_object.layer_upload.key
-# }
-
-
 resource "aws_lambda_function" "segment_modifier" {
   function_name = "${var.prefix}-segment-modifier"
   role          = aws_iam_role.lambda_iam_role.arn
-  runtime       = "python3.11"
   image_uri     = docker_registry_image.container_image.name
   timeout       = 30
   memory_size   = 1024
