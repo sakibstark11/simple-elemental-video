@@ -115,7 +115,6 @@ resource "aws_lambda_function" "segment_modifier" {
       mediapackage_hls_ingest_endpoints = jsonencode(var.mediapackage_hls_ingest_endpoints)
     }
   }
-  depends_on = []
 }
 
 resource "aws_lambda_permission" "s3_invoke" {

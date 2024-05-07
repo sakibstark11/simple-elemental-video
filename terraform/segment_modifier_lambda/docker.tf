@@ -7,7 +7,8 @@ locals {
 }
 
 resource "docker_image" "ecr_image" {
-  name = "${var.prefix}-ecr-image"
+  name     = "${var.prefix}-ecr-image"
+  platform = "linux/x86_64"
 
   triggers = {
     dockerfile_md5 = local.dockerfile_md5
