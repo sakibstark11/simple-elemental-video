@@ -4,7 +4,8 @@ import asyncio
 import os
 
 import boto3
-from postStreamToMediaPackage import postStreamToMediaPackage, postStreamToMultipleMediaPackageEndpoints
+from postStreamToMediaPackage import postStreamToMultipleMediaPackageEndpoints
+
 
 face_classifier = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
@@ -68,8 +69,11 @@ def getS3FileDetailsFromEvent(event):
     }
 
 
+s3 = boto3.client("s3")
+
+
 def handler(event, context):
-    s3 = boto3.client("s3")
+
     s3FileDetails = getS3FileDetailsFromEvent(event)
     fileName = s3FileDetails["fileName"]
 
@@ -93,11 +97,12 @@ def handler(event, context):
     # ]
     ingestResult = postStreamToMultipleMediaPackageEndpoints(
         json.loads(envVariablesList),
-        fileName,
+        s3FileDetails["fileName"],
         content,
         {"contentLength": fileObject['ContentLength'], "contentType": "application/octet-stream"},
     )
 
+    print(ingestResult)
     return ingestResult
 
 

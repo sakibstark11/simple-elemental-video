@@ -11,9 +11,15 @@ data "http" "current_ip" {
   url = "https://api.ipify.org"
 }
 
+variable "prefix" {
+  type        = string
+  description = "to use for grouping resources"
+  default     = "simple-elemental-video"
+}
+
 module "aws_elemental_video_pipeline" {
   source = "./terraform"
-  prefix = "turuper-tash"
+  prefix = var.prefix
 
   mediaconnect_settings = {
     mediaconnect_protocol  = "srt-listener"

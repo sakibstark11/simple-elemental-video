@@ -10,10 +10,9 @@ variable "source_s3_bucket" {
 
 variable "mediapackage_hls_ingest_endpoints" {
   type = list(object({
-    password = string
     url      = string
+    password = string
     username = string
   }))
-  sensitive   = true
-  description = "list of mediapackage hls ingest endpoints"
+  description = "mediapackage configs for ingest"
 }
