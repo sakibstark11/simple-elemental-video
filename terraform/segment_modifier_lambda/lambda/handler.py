@@ -19,7 +19,7 @@ def detect_label_and_blur_faces(frame):
         blurred_roi = cv2.blur(roi, (30, 30))
         frame[y:y + h, x:x + w] = blurred_roi
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 4)
-        cv2.putText(frame, 'Face', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        cv2.putText(frame, 'Looking great', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
     return faces
 
 
@@ -51,14 +51,11 @@ async def process_video_stream(video_stream):
     return bytes_list
 
 
-async def async_handler(fileObject):
-    print('async handler')
-    fileContent = fileObject["Body"].read()
+async def async_handler(file_content):
     video_path = '/tmp/video.ts'
     with open(video_path, 'wb') as f:
-        f.write(fileContent)
+        f.write(file_content)
     byte_list = await process_video_stream(video_path)
-
     os.remove(video_path)
     return byte_list
 
@@ -90,7 +87,7 @@ def handler(event, context):
     # ingestResult = [
     #     postStreamToMediaPackage(
     #         envVars, s3FileDetails["fileName"],
-    #         fileContent,
+    #         content,
     #         { "contentLength": fileObject['ContentLength'], "contentType": "application/octet-stream" }
     #     ) for envVars in json.loads(envVariablesList)
     # ]
@@ -100,9 +97,7 @@ def handler(event, context):
         content,
         {"contentLength": fileObject['ContentLength'], "contentType": "application/octet-stream"},
     )
-    #
-    print(ingestResult)
+
     return ingestResult
 
 
-handler({}, {})
