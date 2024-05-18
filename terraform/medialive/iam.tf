@@ -13,7 +13,7 @@ resource "aws_iam_role" "medialive_iam_role" {
   }
 
   inline_policy {
-    name   = "mediapackage"
-    policy = data.aws_iam_policy_document.medialive_iam_mediapackage_policy.json
+    name   = "s3"
+    policy = data.aws_iam_policy_document.s3_policy.json
   }
 }

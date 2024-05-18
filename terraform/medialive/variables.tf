@@ -8,7 +8,7 @@ variable "mediaconnect_flow_arn" {
   description = "mediaconnect ingress flow arn to use as input"
 }
 
-variable "mediapackage_channel_id" {
+variable "segment_storage_bucket" {
   type        = string
-  description = "the mediapackage channel id to use as destination"
+  description = "bucket to dump segments in"
 }

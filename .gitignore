@@ -8,3 +8,13 @@ terraform.tfstate*
 
 # Tools
 .tool-versions
+*__pycache__/
+*.DS_Store
+# Zip
+*.zip
+
+# Python
+**/layer/*
+
+# Macos
+.DS_Store
